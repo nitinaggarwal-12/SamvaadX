@@ -1,0 +1,12 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "npm run start"
+
+[deploy.env]
+NODE_ENV = "production"
+PORT = "3001"
+NEXT_PUBLIC_API_URL = "https://samvaadx-production.up.railway.app/api/v1"
+NEXT_PUBLIC_WS_URL = "https://samvaadx-production.up.railway.app"
+
