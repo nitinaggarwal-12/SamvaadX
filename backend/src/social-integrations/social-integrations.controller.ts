@@ -9,51 +9,50 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Res,
+  Redirect,
 } from '@nestjs/common';
+import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 import { SocialIntegrationsService } from './social-integrations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('api/social')
 export class SocialIntegrationsController {
+  private readonly frontendUrl: string;
+
   constructor(
     private readonly socialIntegrationsService: SocialIntegrationsService,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.frontendUrl = this.config.get('FRONTEND_URL') || 'http://localhost:3001';
+  }
 
   // ==================== FACEBOOK ====================
 
   @Get('facebook/auth')
   @UseGuards(JwtAuthGuard)
-  async facebookAuth(@CurrentUser() user: any) {
+  async facebookAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('facebook', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/facebook/callback')
   async facebookCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'facebook',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'Facebook account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=facebook`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect Facebook account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=facebook_auth_failed`);
     }
   }
 
@@ -61,36 +60,26 @@ export class SocialIntegrationsController {
 
   @Get('twitter/auth')
   @UseGuards(JwtAuthGuard)
-  async twitterAuth(@CurrentUser() user: any) {
+  async twitterAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('twitter', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/twitter/callback')
   async twitterCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'twitter',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'Twitter account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=twitter`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect Twitter account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=twitter_auth_failed`);
     }
   }
 
@@ -98,36 +87,26 @@ export class SocialIntegrationsController {
 
   @Get('linkedin/auth')
   @UseGuards(JwtAuthGuard)
-  async linkedinAuth(@CurrentUser() user: any) {
+  async linkedinAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('linkedin', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/linkedin/callback')
   async linkedinCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'linkedin',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'LinkedIn account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=linkedin`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect LinkedIn account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=linkedin_auth_failed`);
     }
   }
 
@@ -135,36 +114,26 @@ export class SocialIntegrationsController {
 
   @Get('youtube/auth')
   @UseGuards(JwtAuthGuard)
-  async youtubeAuth(@CurrentUser() user: any) {
+  async youtubeAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('youtube', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/youtube/callback')
   async youtubeCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'youtube',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'YouTube account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=youtube`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect YouTube account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=youtube_auth_failed`);
     }
   }
 
@@ -172,36 +141,26 @@ export class SocialIntegrationsController {
 
   @Get('instagram/auth')
   @UseGuards(JwtAuthGuard)
-  async instagramAuth(@CurrentUser() user: any) {
+  async instagramAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('instagram', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/instagram/callback')
   async instagramCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'instagram',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'Instagram account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=instagram`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect Instagram account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=instagram_auth_failed`);
     }
   }
 
@@ -209,36 +168,26 @@ export class SocialIntegrationsController {
 
   @Get('tiktok/auth')
   @UseGuards(JwtAuthGuard)
-  async tiktokAuth(@CurrentUser() user: any) {
+  async tiktokAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('tiktok', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/tiktok/callback')
   async tiktokCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'tiktok',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'TikTok account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=tiktok`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect TikTok account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=tiktok_auth_failed`);
     }
   }
 
@@ -246,36 +195,26 @@ export class SocialIntegrationsController {
 
   @Get('pinterest/auth')
   @UseGuards(JwtAuthGuard)
-  async pinterestAuth(@CurrentUser() user: any) {
+  async pinterestAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('pinterest', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/pinterest/callback')
   async pinterestCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'pinterest',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'Pinterest account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=pinterest`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect Pinterest account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=pinterest_auth_failed`);
     }
   }
 
@@ -283,36 +222,26 @@ export class SocialIntegrationsController {
 
   @Get('snapchat/auth')
   @UseGuards(JwtAuthGuard)
-  async snapchatAuth(@CurrentUser() user: any) {
+  async snapchatAuth(@CurrentUser() user: any, @Res() res: Response) {
     const authUrl = await this.socialIntegrationsService.getOAuthUrl('snapchat', user.id);
-    return { authUrl };
+    return res.redirect(authUrl);
   }
 
   @Get('auth/snapchat/callback')
   async snapchatCallback(
     @Query('code') code: string,
     @Query('state') state: string,
+    @Res() res: Response,
   ) {
     try {
-      const result = await this.socialIntegrationsService.handleOAuthCallback(
+      await this.socialIntegrationsService.handleOAuthCallback(
         'snapchat',
         code,
         state,
       );
-      return {
-        success: true,
-        message: 'Snapchat account connected successfully',
-        ...result,
-      };
+      return res.redirect(`${this.frontendUrl}/connections?success=snapchat`);
     } catch (error) {
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to connect Snapchat account',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      return res.redirect(`${this.frontendUrl}/connections?error=snapchat_auth_failed`);
     }
   }
 
