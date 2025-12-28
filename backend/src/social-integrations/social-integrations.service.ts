@@ -4,6 +4,11 @@ import { TwitterService } from './providers/twitter.service';
 import { InstagramService } from './providers/instagram.service';
 import { LinkedInService } from './providers/linkedin.service';
 import { YouTubeService } from './providers/youtube.service';
+import { MediumService } from './providers/medium.service';
+import { RedditService } from './providers/reddit.service';
+import { QuoraService } from './providers/quora.service';
+import { PinterestService } from './providers/pinterest.service';
+import { VimeoService } from './providers/vimeo.service';
 import { PrismaService } from '../database/prisma.service';
 
 export interface PublishRequest {
@@ -32,6 +37,11 @@ export class SocialIntegrationsService {
     private readonly instagram: InstagramService,
     private readonly linkedin: LinkedInService,
     private readonly youtube: YouTubeService,
+    private readonly medium: MediumService,
+    private readonly reddit: RedditService,
+    private readonly quora: QuoraService,
+    private readonly pinterest: PinterestService,
+    private readonly vimeo: VimeoService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -71,6 +81,18 @@ export class SocialIntegrationsService {
           case 'youtube':
             result = await this.youtube.publish(connection.accessToken, request.content, request.mediaUrl);
             break;
+          case 'medium':
+            result = await this.medium.publishPost(connection.accessToken, { text: request.content });
+            break;
+          case 'reddit':
+            result = await this.reddit.submitPost(connection.accessToken, { title: request.content.substring(0, 300), text: request.content });
+            break;
+          case 'pinterest':
+            result = await this.pinterest.createPin(connection.accessToken, { description: request.content, imageUrl: request.mediaUrl });
+            break;
+          case 'vimeo':
+            result = await this.vimeo.uploadVideo(connection.accessToken, { description: request.content, videoUrl: request.mediaUrl });
+            break;
           default:
             result = {
               platform: connection.platform,
@@ -108,6 +130,16 @@ export class SocialIntegrationsService {
         return this.linkedin.getAuthUrl(userId);
       case 'youtube':
         return this.youtube.getAuthUrl(userId);
+      case 'medium':
+        return this.medium.getAuthUrl(userId);
+      case 'reddit':
+        return this.reddit.getAuthUrl(userId);
+      case 'quora':
+        return this.quora.getAuthUrl(userId);
+      case 'pinterest':
+        return this.pinterest.getAuthUrl(userId);
+      case 'vimeo':
+        return this.vimeo.getAuthUrl(userId);
       default:
         throw new Error(`Unsupported platform: ${platform}`);
     }
@@ -138,6 +170,21 @@ export class SocialIntegrationsService {
         break;
       case 'youtube':
         tokenData = await this.youtube.handleCallback(code);
+        break;
+      case 'medium':
+        tokenData = await this.medium.handleCallback(code);
+        break;
+      case 'reddit':
+        tokenData = await this.reddit.handleCallback(code);
+        break;
+      case 'quora':
+        tokenData = await this.quora.handleCallback(code);
+        break;
+      case 'pinterest':
+        tokenData = await this.pinterest.handleCallback(code);
+        break;
+      case 'vimeo':
+        tokenData = await this.vimeo.handleCallback(code);
         break;
       default:
         throw new Error(`Unsupported platform: ${platform}`);

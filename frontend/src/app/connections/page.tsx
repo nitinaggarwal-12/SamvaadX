@@ -152,6 +152,39 @@ export default function ConnectionsPage() {
       ],
       setupGuide: '1. Go to business.facebook.com → 2. Open WhatsApp Manager → 3. Add Phone Number → 4. Get API Credentials from Settings'
     },
+    {
+      id: 'medium',
+      name: 'Medium',
+      color: 'bg-gray-800',
+      icon: '📝',
+      fields: [
+        { name: 'integrationToken', label: 'Integration Token', type: 'password', placeholder: 'Your Medium Integration Token' },
+      ],
+      setupGuide: '1. Go to medium.com/me/settings → 2. Scroll to "Integration tokens" → 3. Create new token → 4. Copy token'
+    },
+    {
+      id: 'quora',
+      name: 'Quora',
+      color: 'bg-red-600',
+      icon: '❓',
+      fields: [
+        { name: 'clientId', label: 'Client ID', type: 'text', placeholder: 'Your Quora Client ID' },
+        { name: 'clientSecret', label: 'Client Secret', type: 'password', placeholder: 'Your Quora Client Secret' },
+      ],
+      setupGuide: '1. Go to quora.com/api → 2. Create App → 3. Get Client ID & Secret (Note: Quora API access is limited)'
+    },
+    {
+      id: 'vimeo',
+      name: 'Vimeo',
+      color: 'bg-blue-400',
+      icon: '🎬',
+      fields: [
+        { name: 'clientId', label: 'Client ID', type: 'text', placeholder: 'Your Vimeo Client ID' },
+        { name: 'clientSecret', label: 'Client Secret', type: 'password', placeholder: 'Your Vimeo Client Secret' },
+        { name: 'accessToken', label: 'Access Token', type: 'password', placeholder: 'Your Vimeo Access Token' },
+      ],
+      setupGuide: '1. Go to developer.vimeo.com/apps → 2. Create New App → 3. Generate Access Token with required scopes (upload, edit, video_files)'
+    },
   ];
 
   const handleManualSetup = async (platform: PlatformConfig) => {

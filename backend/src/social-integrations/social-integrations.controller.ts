@@ -245,6 +245,114 @@ export class SocialIntegrationsController {
     }
   }
 
+  // ==================== MEDIUM ====================
+
+  @Get('medium/auth')
+  @UseGuards(JwtAuthGuard)
+  async mediumAuth(@CurrentUser() user: any, @Res() res: Response) {
+    const authUrl = await this.socialIntegrationsService.getOAuthUrl('medium', user.id);
+    return res.redirect(authUrl);
+  }
+
+  @Get('auth/medium/callback')
+  async mediumCallback(
+    @Query('code') code: string,
+    @Query('state') state: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.socialIntegrationsService.handleOAuthCallback(
+        'medium',
+        code,
+        state,
+      );
+      return res.redirect(`${this.frontendUrl}/connections?success=medium`);
+    } catch (error) {
+      return res.redirect(`${this.frontendUrl}/connections?error=medium_auth_failed`);
+    }
+  }
+
+  // ==================== REDDIT ====================
+
+  @Get('reddit/auth')
+  @UseGuards(JwtAuthGuard)
+  async redditAuth(@CurrentUser() user: any, @Res() res: Response) {
+    const authUrl = await this.socialIntegrationsService.getOAuthUrl('reddit', user.id);
+    return res.redirect(authUrl);
+  }
+
+  @Get('auth/reddit/callback')
+  async redditCallback(
+    @Query('code') code: string,
+    @Query('state') state: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.socialIntegrationsService.handleOAuthCallback(
+        'reddit',
+        code,
+        state,
+      );
+      return res.redirect(`${this.frontendUrl}/connections?success=reddit`);
+    } catch (error) {
+      return res.redirect(`${this.frontendUrl}/connections?error=reddit_auth_failed`);
+    }
+  }
+
+  // ==================== QUORA ====================
+
+  @Get('quora/auth')
+  @UseGuards(JwtAuthGuard)
+  async quoraAuth(@CurrentUser() user: any, @Res() res: Response) {
+    const authUrl = await this.socialIntegrationsService.getOAuthUrl('quora', user.id);
+    return res.redirect(authUrl);
+  }
+
+  @Get('auth/quora/callback')
+  async quoraCallback(
+    @Query('code') code: string,
+    @Query('state') state: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.socialIntegrationsService.handleOAuthCallback(
+        'quora',
+        code,
+        state,
+      );
+      return res.redirect(`${this.frontendUrl}/connections?success=quora`);
+    } catch (error) {
+      return res.redirect(`${this.frontendUrl}/connections?error=quora_auth_failed`);
+    }
+  }
+
+  // ==================== VIMEO ====================
+
+  @Get('vimeo/auth')
+  @UseGuards(JwtAuthGuard)
+  async vimeoAuth(@CurrentUser() user: any, @Res() res: Response) {
+    const authUrl = await this.socialIntegrationsService.getOAuthUrl('vimeo', user.id);
+    return res.redirect(authUrl);
+  }
+
+  @Get('auth/vimeo/callback')
+  async vimeoCallback(
+    @Query('code') code: string,
+    @Query('state') state: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.socialIntegrationsService.handleOAuthCallback(
+        'vimeo',
+        code,
+        state,
+      );
+      return res.redirect(`${this.frontendUrl}/connections?success=vimeo`);
+    } catch (error) {
+      return res.redirect(`${this.frontendUrl}/connections?error=vimeo_auth_failed`);
+    }
+  }
+
   // ==================== GENERAL ENDPOINTS ====================
 
   @Get('connections')

@@ -2,39 +2,16 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
-interface PinterestAuthConfig {
-  appId: string;
-  appSecret: string;
-  redirectUri: string;
-}
-
-interface PinterestPin {
-  boardId: string;
-  title: string;
-  description?: string;
-  link?: string;
-  imageUrl: string;
-  altText?: string;
-}
-
 @Injectable()
 export class PinterestService {
   private readonly logger = new Logger(PinterestService.name);
-  private readonly baseUrl = 'https://api.pinterest.com/v5';
-  private readonly authConfig: PinterestAuthConfig;
 
-  constructor(private configService: ConfigService) {
-    this.authConfig = {
-      appId: this.configService.get<string>('PINTEREST_APP_ID'),
-      appSecret: this.configService.get<string>('PINTEREST_APP_SECRET'),
-      redirectUri: this.configService.get<string>('PINTEREST_REDIRECT_URI'),
-    };
-  }
+  constructor(private configService: ConfigService) {}
 
-  /**
-   * Get Pinterest OAuth authorization URL
-   */
-  getAuthorizationUrl(state: string): string {
+  getAuthUrl(state: string): string {
+    const clientId = this.configService.get<string>('PINTEREST_CLIENT_ID');
+    const redirectUri = this.configService.get<string>('PINTEREST_REDIRECT_URI');
+    
     const scopes = [
       'boards:read',
       'boards:write',
@@ -44,8 +21,8 @@ export class PinterestService {
     ];
 
     const params = new URLSearchParams({
-      client_id: this.authConfig.appId,
-      redirect_uri: this.authConfig.redirectUri,
+      client_id: clientId,
+      redirect_uri: redirectUri,
       response_type: 'code',
       scope: scopes.join(','),
       state,
@@ -54,22 +31,24 @@ export class PinterestService {
     return `https://www.pinterest.com/oauth/?${params.toString()}`;
   }
 
-  /**
-   * Exchange authorization code for access token
-   */
-  async getAccessToken(code: string): Promise<any> {
+  async handleCallback(code: string): Promise<any> {
+    const clientId = this.configService.get<string>('PINTEREST_CLIENT_ID');
+    const clientSecret = this.configService.get<string>('PINTEREST_CLIENT_SECRET');
+    const redirectUri = this.configService.get<string>('PINTEREST_REDIRECT_URI');
+
     try {
-      const response = await axios.post(
+      // Exchange code for access token
+      const tokenResponse = await axios.post(
         'https://api.pinterest.com/v5/oauth/token',
         new URLSearchParams({
           grant_type: 'authorization_code',
           code,
-          redirect_uri: this.authConfig.redirectUri,
+          redirect_uri: redirectUri,
         }),
         {
           auth: {
-            username: this.authConfig.appId,
-            password: this.authConfig.appSecret,
+            username: clientId,
+            password: clientSecret,
           },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -77,17 +56,72 @@ export class PinterestService {
         },
       );
 
-      return response.data;
+      const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
+      // Get user info
+      const userResponse = await axios.get('https://api.pinterest.com/v5/user_account', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const expiresAt = new Date();
+      expiresAt.setSeconds(expiresAt.getSeconds() + expires_in);
+
+      return {
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresAt: expiresAt,
+        metadata: {
+          userId: userResponse.data.id,
+          username: userResponse.data.username,
+          accountType: userResponse.data.account_type,
+          profileUrl: userResponse.data.profile_image,
+        },
+      };
     } catch (error) {
-      this.logger.error('Failed to get Pinterest access token', error);
-      throw error;
+      this.logger.error('Pinterest OAuth error:', error.response?.data || error.message);
+      throw new Error(`Pinterest authentication failed: ${error.message}`);
     }
   }
 
-  /**
-   * Refresh access token
-   */
+  async createPin(accessToken: string, content: any): Promise<any> {
+    try {
+      const pinResponse = await axios.post(
+        'https://api.pinterest.com/v5/pins',
+        {
+          board_id: content.boardId,
+          title: content.title,
+          description: content.description,
+          link: content.link,
+          media_source: {
+            source_type: 'image_url',
+            url: content.imageUrl,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return {
+        success: true,
+        pinId: pinResponse.data.id,
+        url: pinResponse.data.link,
+      };
+    } catch (error) {
+      this.logger.error('Pinterest pin error:', error.response?.data || error.message);
+      throw new Error(`Failed to create Pinterest pin: ${error.message}`);
+    }
+  }
+
   async refreshAccessToken(refreshToken: string): Promise<any> {
+    const clientId = this.configService.get<string>('PINTEREST_CLIENT_ID');
+    const clientSecret = this.configService.get<string>('PINTEREST_CLIENT_SECRET');
+
     try {
       const response = await axios.post(
         'https://api.pinterest.com/v5/oauth/token',
@@ -97,8 +131,8 @@ export class PinterestService {
         }),
         {
           auth: {
-            username: this.authConfig.appId,
-            password: this.authConfig.appSecret,
+            username: clientId,
+            password: clientSecret,
           },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -106,176 +140,17 @@ export class PinterestService {
         },
       );
 
-      return response.data;
+      const { access_token, expires_in } = response.data;
+      const expiresAt = new Date();
+      expiresAt.setSeconds(expiresAt.getSeconds() + expires_in);
+
+      return {
+        accessToken: access_token,
+        expiresAt: expiresAt,
+      };
     } catch (error) {
-      this.logger.error('Failed to refresh Pinterest token', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get user info
-   */
-  async getUserInfo(accessToken: string): Promise<any> {
-    try {
-      const response = await axios.get(`${this.baseUrl}/user_account`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Failed to get Pinterest user info', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get user boards
-   */
-  async getUserBoards(
-    accessToken: string,
-    pageSize: number = 25,
-  ): Promise<any> {
-    try {
-      const response = await axios.get(`${this.baseUrl}/boards`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          page_size: pageSize,
-        },
-      });
-
-      return response.data.items;
-    } catch (error) {
-      this.logger.error('Failed to get Pinterest boards', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Create a new pin
-   */
-  async createPin(
-    accessToken: string,
-    pinData: PinterestPin,
-  ): Promise<any> {
-    try {
-      const response = await axios.post(
-        `${this.baseUrl}/pins`,
-        {
-          board_id: pinData.boardId,
-          title: pinData.title,
-          description: pinData.description,
-          link: pinData.link,
-          media_source: {
-            source_type: 'image_url',
-            url: pinData.imageUrl,
-          },
-          alt_text: pinData.altText,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Failed to create Pinterest pin', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get pin analytics
-   */
-  async getPinAnalytics(
-    accessToken: string,
-    pinId: string,
-    startDate: string,
-    endDate: string,
-  ): Promise<any> {
-    try {
-      const response = await axios.get(
-        `${this.baseUrl}/pins/${pinId}/analytics`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            metric_types: 'IMPRESSION,SAVE,PIN_CLICK,OUTBOUND_CLICK',
-          },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Failed to get Pinterest pin analytics', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get user pins
-   */
-  async getUserPins(
-    accessToken: string,
-    pageSize: number = 25,
-  ): Promise<any> {
-    try {
-      const response = await axios.get(`${this.baseUrl}/pins`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          page_size: pageSize,
-        },
-      });
-
-      return response.data.items;
-    } catch (error) {
-      this.logger.error('Failed to get Pinterest pins', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Create a new board
-   */
-  async createBoard(
-    accessToken: string,
-    name: string,
-    description?: string,
-    privacy: 'PUBLIC' | 'PROTECTED' | 'SECRET' = 'PUBLIC',
-  ): Promise<any> {
-    try {
-      const response = await axios.post(
-        `${this.baseUrl}/boards`,
-        {
-          name,
-          description,
-          privacy,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Failed to create Pinterest board', error);
-      throw error;
+      this.logger.error('Pinterest token refresh error:', error.response?.data || error.message);
+      throw new Error(`Failed to refresh Pinterest token: ${error.message}`);
     }
   }
 }
-
