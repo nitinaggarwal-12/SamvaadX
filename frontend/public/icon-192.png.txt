@@ -1,0 +1,2 @@
+# Creating placeholder icons - In production, replace with actual PNG files
+# For now, creating the icons directory structure
