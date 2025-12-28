@@ -143,6 +143,16 @@ export class SocialIntegrationsService {
         throw new Error(`Unsupported platform: ${platform}`);
     }
 
+    // Get user's organization ID
+    const user = await this.prisma.user.findUnique({
+      where: { id: state },
+      select: { organizationId: true },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
     // Store the connection in database
     await this.prisma.socialConnection.upsert({
       where: {
@@ -153,6 +163,7 @@ export class SocialIntegrationsService {
       },
       create: {
         userId: state,
+        organizationId: user.organizationId,
         platform: platform,
         accessToken: tokenData.accessToken,
         accessTokenSecret: tokenData.accessTokenSecret,
