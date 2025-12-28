@@ -18,7 +18,7 @@ import { SocialIntegrationsService } from './social-integrations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@Controller('api/social')
+@Controller('social')
 export class SocialIntegrationsController {
   private readonly frontendUrl: string;
 
