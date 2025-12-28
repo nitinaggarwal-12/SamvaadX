@@ -1,18 +1,18 @@
-# 🚀 Guddu-Project
+# 🚀 Guddu-Project (SamvaadX)
 
 > **Enterprise Social Media Marketing Command Center for Governments & International Organizations**
 
-[![License](https://img.shields.io/badge/license-UNLICENSED-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/typescript-%5E5.3.3-blue.svg)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/next.js-14.0-black.svg)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/next.js-15.0-black.svg)](https://nextjs.org/)
 [![NestJS](https://img.shields.io/badge/nestjs-10.3-red.svg)](https://nestjs.com/)
 
 ---
 
 ## 🌍 **Vision**
 
-Guddu-Project is the world's most advanced social media marketing platform designed specifically for **governments**, **parliaments**, and **international organizations** to manage high-stakes global events with unparalleled reach, intelligence, and security.
+Guddu-Project (also known as **SamvaadX**) is the world's most advanced social media marketing platform designed specifically for **governments**, **parliaments**, and **international organizations** to manage high-stakes global events with unparalleled reach, intelligence, and security.
 
 **First Customer**: Parliament of India for the 28th Conference of Speakers and Presiding Officers of the Commonwealth (CSPOC 2026)
 
@@ -31,8 +31,10 @@ Guddu-Project is the world's most advanced social media marketing platform desig
 - **Template library**: Government-grade design templates
 - **Real-time editing**: Publish content in under 5 seconds
 
-### 📱 **Multi-Platform Publishing**
-- Unified publishing to **Facebook**, **X/Twitter**, **Instagram**, **YouTube**, **LinkedIn**
+### 📱 **Multi-Platform Publishing (13 Platforms)**
+- **Major Platforms**: Facebook, X/Twitter, Instagram, YouTube, LinkedIn
+- **Emerging Platforms**: TikTok, Pinterest, Snapchat
+- **Messaging**: Reddit, Telegram, WhatsApp Business
 - Platform-specific optimization
 - Scheduled & instant publishing
 - Bulk operations
@@ -46,24 +48,33 @@ Guddu-Project is the world's most advanced social media marketing platform desig
 
 ### 📊 **Intelligence & Analytics**
 - **AI-powered sentiment analysis**: Track public perception in real-time
-- **Predictive insights**: Forecast engagement and reach
+- **Predictive analytics**: Forecast engagement and reach
 - **Multi-platform metrics**: Unified view across all channels
 - **Automated reporting**: PDF, PPT, Excel exports
 - **Executive dashboards**: C-suite ready visualizations
+- **ROI tracking & attribution**: Measure campaign effectiveness
 
 ### 🔒 **Government-Grade Security**
 - **Zero-trust architecture**: Every request authenticated & authorized
-- **SOC 2 Type II compliant**: Enterprise security controls
+- **OAuth 2.0 integration**: Secure platform connections
 - **End-to-end encryption**: Data encrypted at rest and in transit
 - **Audit trails**: Immutable logs of every action
-- **Role-based access**: 10 predefined roles with granular permissions
+- **Advanced RBAC**: 10 predefined roles with granular permissions
 
 ### 🤖 **AI-Augmented Workflows**
-- **Auto-captioning**: GPT-4 powered multilingual captions
+- **Advanced AI content generation**: GPT-4 powered content creation
+- **Auto-captioning**: Multilingual captions
 - **Image analysis**: Automatic tagging and description
 - **Sentiment detection**: Real-time emotion tracking
 - **Content suggestions**: AI-driven recommendations
 - **Translation**: 100+ languages with cultural context
+
+### 🎨 **Premium UI/UX**
+- **Glassmorphism design**: Modern, futuristic interface
+- **Animated particles & gradients**: Dynamic visual effects
+- **Responsive design**: Mobile-first approach
+- **PWA support**: Install as native app
+- **Dark mode ready**: Beautiful in any lighting
 
 ---
 
@@ -81,10 +92,10 @@ Guddu-Project is the world's most advanced social media marketing platform desig
 - **AI/ML**: OpenAI GPT-4, Azure Computer Vision
 
 #### Frontend
-- **Framework**: Next.js 14 (React 18 + App Router)
-- **Styling**: Tailwind CSS + Shadcn/ui
-- **State**: Zustand
-- **Data Fetching**: TanStack Query
+- **Framework**: Next.js 15 (React 19 + App Router)
+- **Styling**: Tailwind CSS
+- **State**: React Context + Hooks
+- **Data Fetching**: Native fetch API
 - **Real-time**: Socket.io
 
 #### Infrastructure
@@ -112,30 +123,43 @@ guddu-project/
 │   │   ├── analytics/      # Metrics & reporting
 │   │   ├── ai/             # AI services
 │   │   ├── workflow/       # Approval workflows
+│   │   ├── social-integrations/  # Social media APIs
 │   │   └── ...
 │   ├── prisma/             # Database schema & migrations
 │   └── package.json
 ├── frontend/               # Next.js App
 │   ├── src/
-│   │   ├── app/           # App router pages
-│   │   ├── components/    # React components
-│   │   ├── lib/           # Utilities
-│   │   └── hooks/         # Custom hooks
+│   │   ├── app/           # App router pages (60+ pages)
+│   │   │   ├── dashboard/      # Main dashboard
+│   │   │   ├── connections/    # Social connections
+│   │   │   ├── analytics/      # Analytics dashboard
+│   │   │   ├── campaigns/      # Campaign manager
+│   │   │   ├── calendar/       # Content calendar
+│   │   │   ├── inbox/          # Social inbox
+│   │   │   ├── media-library/  # Media assets
+│   │   │   ├── ai-content-gen/ # AI content gen
+│   │   │   └── ...             # 50+ more pages
+│   │   └── ...
 │   └── package.json
 ├── infrastructure/         # DevOps configs
-│   ├── docker/
 │   ├── kubernetes/
-│   ├── terraform/
-│   └── helm/
+│   └── ...
 ├── .github/
 │   └── workflows/         # CI/CD pipelines
-├── docs/                  # Documentation
-│   ├── API.md
+├── docs/                  # Comprehensive documentation
+│   ├── VISION.md
+│   ├── USER_PERSONAS.md
 │   ├── ARCHITECTURE.md
-│   ├── DEPLOYMENT.md
-│   └── USER_GUIDES/
+│   ├── API_SPECIFICATION.md
+│   ├── DATABASE_ERD.md
+│   ├── COMPETITIVE_ANALYSIS.md
+│   ├── SOCIAL_MEDIA_API_SETUP.md
+│   ├── SOCIAL_MEDIA_TESTING_GUIDE.md
+│   └── ...
 ├── docker-compose.yml     # Local development
-└── README.md              # This file
+├── setup-oauth.sh        # Interactive OAuth setup wizard
+├── test-integrations.sh  # Integration testing script
+└── README.md             # This file
 ```
 
 ---
@@ -146,29 +170,17 @@ guddu-project/
 
 - **Node.js**: >= 20.0.0
 - **npm**: >= 10.0.0
-- **Docker**: >= 24.0.0
-- **Docker Compose**: >= 2.0.0
-- **PostgreSQL**: >= 16 (or use Docker)
-- **Redis**: >= 7 (or use Docker)
+- **PostgreSQL**: >= 16
+- **Docker** (optional): >= 24.0.0
 
 ### 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/your-org/guddu-project.git
-cd guddu-project
+git clone https://github.com/nitinaggarwal-12/SamvaadX.git
+cd SamvaadX
 ```
 
-### 2. **Start Infrastructure (Docker Compose)**
-
-```bash
-# Start PostgreSQL, Redis, Elasticsearch
-docker-compose up -d postgres redis elasticsearch
-
-# Verify services are running
-docker-compose ps
-```
-
-### 3. **Setup Backend**
+### 2. **Setup Backend**
 
 ```bash
 cd backend
@@ -176,19 +188,15 @@ cd backend
 # Install dependencies
 npm install
 
-# Copy environment file
+# Setup environment
 cp .env.example .env
-
-# Update .env with your configuration
+# Edit .env with your configuration
 
 # Generate Prisma client
 npx prisma generate
 
 # Run database migrations
 npx prisma migrate dev
-
-# Seed database (optional)
-npx prisma db seed
 
 # Start development server
 npm run start:dev
@@ -197,7 +205,7 @@ npm run start:dev
 Backend will be running at **http://localhost:3000**  
 API Docs: **http://localhost:3000/api/docs**
 
-### 4. **Setup Frontend**
+### 3. **Setup Frontend**
 
 ```bash
 cd frontend
@@ -205,10 +213,9 @@ cd frontend
 # Install dependencies
 npm install
 
-# Copy environment file
+# Setup environment
 cp .env.example .env.local
-
-# Update .env.local if needed
+# Edit .env.local if needed
 
 # Start development server
 npm run dev
@@ -216,18 +223,27 @@ npm run dev
 
 Frontend will be running at **http://localhost:3001**
 
+### 4. **Setup Social Media Integrations**
+
+```bash
+# Run the interactive OAuth setup wizard
+./setup-oauth.sh
+
+# Or follow the testing guide
+# See: SOCIAL_MEDIA_TESTING_GUIDE.md
+# See: CREDENTIALS_NEEDED.md
+```
+
 ### 5. **Access the Application**
 
 - **Frontend**: http://localhost:3001
 - **Backend API**: http://localhost:3000/api/v1
 - **API Documentation (Swagger)**: http://localhost:3000/api/docs
-- **Prisma Studio** (Database GUI): `npx prisma studio`
+- **Prisma Studio**: `npx prisma studio`
 
 ---
 
 ## 🐳 **Docker Deployment**
-
-### Full Stack with Docker Compose
 
 ```bash
 # Build and start all services
@@ -237,8 +253,7 @@ docker-compose up --build
 docker-compose up -d
 
 # View logs
-docker-compose logs -f backend
-docker-compose logs -f frontend
+docker-compose logs -f
 
 # Stop all services
 docker-compose down
@@ -246,56 +261,34 @@ docker-compose down
 
 ---
 
-## ☸️ **Kubernetes Deployment**
+## 🌐 **Social Media Integration**
 
-### Prerequisites
-- Kubernetes cluster (EKS, GKE, or local with Minikube)
-- kubectl configured
-- Helm installed
+### Supported Platforms (13 Total)
 
-### Deploy with Helm
+1. **Facebook** - Pages, Groups, Stories
+2. **Twitter/X** - Posts, Threads, Media
+3. **Instagram** - Feed, Stories, Reels
+4. **YouTube** - Videos, Live Streams, Community
+5. **LinkedIn** - Pages, Profiles, Articles
+6. **TikTok** - Videos, Challenges
+7. **Pinterest** - Pins, Boards
+8. **Snapchat** - Stories, Spotlight
+9. **Reddit** - Posts, Comments
+10. **Telegram** - Channels, Groups
+11. **WhatsApp Business** - Messages, Status
+12. **Additional platforms** - Extensible architecture
 
-```bash
-cd infrastructure/helm
+### OAuth Setup
 
-# Install backend
-helm install guddu-backend ./guddu-backend -f values-production.yaml
-
-# Install frontend
-helm install guddu-frontend ./guddu-frontend -f values-production.yaml
-
-# Check deployments
-kubectl get pods
-kubectl get services
-```
-
----
-
-## 🧪 **Testing**
-
-### Backend Tests
+Run the interactive setup wizard:
 
 ```bash
-cd backend
-
-# Unit tests
-npm test
-
-# E2E tests
-npm run test:e2e
-
-# Test coverage
-npm run test:cov
+./setup-oauth.sh
 ```
 
-### Frontend Tests
+Or follow the comprehensive guide: [`CREDENTIALS_NEEDED.md`](CREDENTIALS_NEEDED.md)
 
-```bash
-cd frontend
-
-# Run tests (if configured)
-npm test
-```
+For detailed API setup instructions: [`SOCIAL_MEDIA_API_SETUP.md`](SOCIAL_MEDIA_API_SETUP.md)
 
 ---
 
@@ -313,8 +306,10 @@ The platform uses **PostgreSQL** with **Prisma ORM**. Key entities:
 - **PublishedPosts**: Social media publications
 - **EngagementMetrics**: Time-series analytics
 - **SentimentAnalysis**: AI-powered insights
+- **SocialConnection**: OAuth tokens for 13 platforms
 
-See full schema: [`backend/prisma/schema.prisma`](backend/prisma/schema.prisma)
+See full schema: [`backend/prisma/schema.prisma`](backend/prisma/schema.prisma)  
+ERD diagram: [`DATABASE_ERD.md`](DATABASE_ERD.md)
 
 ---
 
@@ -340,43 +335,15 @@ POST /api/v1/auth/login
   "email": "user@parliament.gov.in",
   "password": "SecurePass123!"
 }
-
-# Response
-{
-  "accessToken": "eyJhbGciOiJIUzI1...",
-  "refreshToken": "uuid",
-  "user": { ... }
-}
-```
-
-### Using JWT in Requests
-
-```bash
-curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-     http://localhost:3000/api/v1/users
 ```
 
 ---
 
 ## 📖 **API Documentation**
 
-Full API documentation is available via Swagger UI:
+Full API documentation: **http://localhost:3000/api/docs**
 
-**http://localhost:3000/api/docs**
-
-### Key Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/auth/login` | User login |
-| GET | `/api/v1/auth/me` | Get current user |
-| GET | `/api/v1/events` | List events |
-| POST | `/api/v1/content` | Create content |
-| POST | `/api/v1/content/:id/publish` | Publish to socials |
-| GET | `/api/v1/analytics/dashboard` | Analytics overview |
-| POST | `/api/v1/ai/generate-caption` | AI caption generation |
-
-See complete API spec: [`API_SPECIFICATION.md`](API_SPECIFICATION.md)
+Complete API spec: [`API_SPECIFICATION.md`](API_SPECIFICATION.md)
 
 ---
 
@@ -397,113 +364,98 @@ See detailed personas: [`USER_PERSONAS.md`](USER_PERSONAS.md)
 
 ---
 
-## 🔧 **Configuration**
+## 🎯 **60+ Features**
 
-### Environment Variables
+### Core Features (Phase 1)
+✅ Social Media Connections  
+✅ Post Creation & Publishing  
+✅ Analytics Dashboard  
+✅ Campaign Management  
+✅ Content Calendar  
+✅ Social Inbox  
+✅ Media Library  
+✅ Draft Management  
+✅ Bulk Scheduler  
+✅ Custom Reports  
+✅ Hashtag Manager  
+✅ Link Shortener  
 
-#### Backend (`backend/.env`)
-```env
-NODE_ENV=development
-PORT=3000
-DATABASE_URL=postgresql://...
-JWT_SECRET=your-secret
-REDIS_HOST=localhost
-AWS_S3_BUCKET=guddu-media
-OPENAI_API_KEY=sk-...
-```
+### Advanced Features (Phase 2-3)
+✅ Team Collaboration  
+✅ Approval Workflow  
+✅ A/B Testing  
+✅ Influencer Tracking  
+✅ Competitor Monitoring  
+✅ Crisis Management  
+✅ AI Chatbot  
+✅ Stories Manager  
+✅ Video Editor  
+✅ Template Library  
+✅ White-label Support  
+✅ Webhooks  
+✅ API Marketplace  
+✅ Budget Tracking  
+✅ Ad Campaign Manager  
+✅ Social Listening  
+✅ Review Management  
+✅ Live Streaming  
+✅ Advanced RBAC  
+✅ Brand Monitoring  
+✅ Sentiment Analysis  
+✅ Content Library  
+✅ Audience Insights  
+✅ ROI Tracking  
+✅ Contest Manager  
+✅ Press Release Distribution  
+✅ Best Time to Post AI  
+✅ Recurring Posts  
+✅ Employee Advocacy  
+✅ UGC Curator  
+✅ Auto-responder  
+✅ Saved Reply Templates  
+✅ Post Versioning  
+✅ RSS Feed Importer  
+✅ Geo-Targeting  
+✅ Custom Branding  
+✅ Campaign Templates  
+✅ Approval History  
+✅ Content Expiration  
+✅ Task Assignment  
+✅ Schedule Queue  
+✅ Engagement Alerts  
+✅ Post Variations  
+✅ Cross-Network Syndication  
 
-#### Frontend (`frontend/.env.local`)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
-NEXT_PUBLIC_WS_URL=http://localhost:3000
-```
+### Latest Features (Phase 4)
+✅ TikTok Integration  
+✅ Pinterest Integration  
+✅ Snapchat Integration  
+✅ Advanced AI Content Generation  
+✅ Predictive Analytics  
+✅ Reddit Integration  
+✅ Telegram Bot Integration  
+✅ WhatsApp Business Integration  
 
-See full examples:
-- [`backend/.env.example`](backend/.env.example)
-- [`frontend/.env.example`](frontend/.env.example)
-
----
-
-## 🌐 **Social Media Integration**
-
-### Supported Platforms
-
-#### Facebook
-- Facebook Pages
-- Facebook Groups
-- Instagram Business (via Graph API)
-
-#### X/Twitter
-- Posts (Tweets)
-- Threads
-- Media uploads
-
-#### Instagram
-- Feed Posts
-- Stories
-- Reels
-
-#### YouTube
-- Video uploads
-- Live streams
-- Community posts
-
-#### LinkedIn
-- Organization Pages
-- Personal profiles
-- Articles
-
-### OAuth Setup
-
-Each platform requires OAuth 2.0 credentials:
-
-```env
-FACEBOOK_APP_ID=your-app-id
-FACEBOOK_APP_SECRET=your-app-secret
-
-TWITTER_API_KEY=your-api-key
-TWITTER_API_SECRET=your-api-secret
-```
-
----
-
-## 📈 **Monitoring & Observability**
-
-### Metrics (Prometheus + Grafana)
-- Request latency (p50, p95, p99)
-- Error rates
-- Database query performance
-- Queue depths
-
-### Logs (Loki)
-- Structured JSON logs
-- Query by service, level, user
-
-### Error Tracking (Sentry)
-- Real-time error alerts
-- Stack traces
-- Performance monitoring
+See competitive analysis: [`COMPETITIVE_ANALYSIS.md`](COMPETITIVE_ANALYSIS.md)
 
 ---
 
-## 🤝 **Contributing**
+## 🧪 **Testing**
 
-We welcome contributions! Please follow these guidelines:
+### Test Social Media Integrations
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+```bash
+./test-integrations.sh
+```
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for detailed guidelines.
+See testing guide: [`SOCIAL_MEDIA_TESTING_GUIDE.md`](SOCIAL_MEDIA_TESTING_GUIDE.md)
 
 ---
 
 ## 📄 **License**
 
-This project is **UNLICENSED** and proprietary.  
-© 2025 Guddu-Project. All rights reserved.
+This project is licensed under the **GPL-3.0 License**.  
+See [`LICENSE`](LICENSE) for details.
 
 ---
 
@@ -518,53 +470,52 @@ This project is **UNLICENSED** and proprietary.
 
 ## 📞 **Support**
 
-- **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/guddu-project/issues)
-- **Email**: support@guddu-project.com
-- **Slack**: [Join our community](https://guddu-project.slack.com)
+- **Documentation**: See `/docs` folder
+- **Issues**: [GitHub Issues](https://github.com/nitinaggarwal-12/SamvaadX/issues)
+- **Repository**: https://github.com/nitinaggarwal-12/SamvaadX
 
 ---
 
 ## 🎯 **Roadmap**
 
-### Phase 1: MVP (Q1 2026) ✅
+### Phase 1: MVP ✅ COMPLETE
 - ✅ Core authentication & user management
 - ✅ Event & campaign management
 - ✅ Content creation & publishing
-- ✅ Multi-platform integration
-- ✅ Basic analytics
+- ✅ Multi-platform integration (13 platforms)
+- ✅ Analytics & reporting
 
-### Phase 2: CSPOC 2026 (Jan 14-17, 2026) 🚀
+### Phase 2: Enhanced Features ✅ COMPLETE
+- ✅ Team collaboration
+- ✅ Approval workflows
+- ✅ A/B testing
+- ✅ Influencer tracking
+- ✅ Crisis management
+
+### Phase 3: Advanced Intelligence ✅ COMPLETE
+- ✅ Advanced RBAC
+- ✅ Brand monitoring
+- ✅ Sentiment analysis
+- ✅ Audience insights
+- ✅ ROI tracking
+
+### Phase 4: AI & Emerging Platforms ✅ COMPLETE
+- ✅ TikTok/Pinterest/Snapchat integration
+- ✅ Advanced AI content generation
+- ✅ Predictive analytics
+- ✅ Reddit/Telegram/WhatsApp integration
+
+### Phase 5: CSPOC 2026 (Jan 14-17, 2026) 🚀
 - 🚀 Live control room
-- 🚀 Real-time sentiment analysis
+- 🚀 Real-time monitoring
 - 🚀 VIP delegate tracking
 - 🚀 Mobile app for on-ground ops
 
-### Phase 3: Scale (Q2-Q4 2026)
-- 📱 React Native mobile app
-- 🤖 Advanced AI features (video generation, deepfake detection)
-- 🌐 Multi-language UI
-- 📊 Predictive analytics
-- 🔐 SOC 2 Type II certification
-
-### Phase 4: Global Expansion (2027+)
-- 🌍 100+ government customers
-- 💰 $100M ARR
-- 🦄 Unicorn status
-
 ---
 
-## 🙏 **Acknowledgments**
+## 💎 **Why SamvaadX (Guddu-Project)?**
 
-- Parliament of India for being our first customer
-- Commonwealth Parliamentary Association
-- All open-source libraries we depend on
-
----
-
-## 💎 **Why Guddu-Project?**
-
-> *"When world leaders speak to the world, they use Guddu-Project"*
+> *"When world leaders speak to the world, they use SamvaadX"*
 
 Built for the highest stakes, the biggest stages, and the most critical moments in global diplomacy.
 
@@ -573,5 +524,3 @@ Built for the highest stakes, the biggest stages, and the most critical moments 
 ---
 
 **Made with ❤️ for governments worldwide** 🌍🏛️
-
-
