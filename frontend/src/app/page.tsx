@@ -140,7 +140,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  Guddu-Project
+                  SamvaadX
                 </h1>
                 <p className="text-xs text-gray-400">Trusted by Governments Worldwide</p>
               </div>
@@ -183,7 +183,7 @@ export default function Home() {
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              When world leaders speak to the world, they use Guddu-Project. 
+              When world leaders speak to the world, they use SamvaadX. 
               <br />
               <span className="text-purple-400 font-semibold">Government-grade. AI-powered. Globally trusted.</span>
             </p>

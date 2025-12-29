@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Guddu-Project | World\'s Most Advanced Social Media Marketing Platform',
+  title: 'SamvaadX | World\'s Most Advanced Social Media Marketing Platform',
   description: 'Government-grade social media marketing command center trusted by parliaments and international organizations worldwide. Powered by AI, built for scale.',
   keywords: 'social media, marketing, government, events, CSPOC, parliament, AI, analytics',
   manifest: '/manifest.json',
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Guddu-Project',
+    title: 'SamvaadX',
   },
   openGraph: {
-    title: 'Guddu-Project - Enterprise Social Media Marketing Platform',
-    description: 'When world leaders speak to the world, they use Guddu-Project',
+    title: 'SamvaadX - Enterprise Social Media Marketing Platform',
+    description: 'When world leaders speak to the world, they use SamvaadX',
     images: ['/og-image.png'],
   },
 };

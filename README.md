@@ -1,4 +1,4 @@
-# 🚀 Guddu-Project (SamvaadX)
+# 🚀 SamvaadX
 
 > **Enterprise Social Media Marketing Command Center for Governments & International Organizations**
 
@@ -12,7 +12,7 @@
 
 ## 🌍 **Vision**
 
-Guddu-Project (also known as **SamvaadX**) is the world's most advanced social media marketing platform designed specifically for **governments**, **parliaments**, and **international organizations** to manage high-stakes global events with unparalleled reach, intelligence, and security.
+**SamvaadX** is the world's most advanced social media marketing platform designed specifically for **governments**, **parliaments**, and **international organizations** to manage high-stakes global events with unparalleled reach, intelligence, and security.
 
 **First Customer**: Parliament of India for the 28th Conference of Speakers and Presiding Officers of the Commonwealth (CSPOC 2026)
 
