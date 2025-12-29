@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, password, firstName, lastName, organizationSlug, role } = registerDto;
+    const { email, password, firstName, lastName, organizationSlug, organizationName, role = 'CONSUMER' } = registerDto;
 
     // Check if user exists
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
@@ -22,12 +22,29 @@ export class AuthService {
       throw new ConflictException('User with this email already exists');
     }
 
-    // Find organization
-    const organization = await this.prisma.organization.findUnique({
-      where: { slug: organizationSlug },
-    });
-    if (!organization) {
-      throw new ConflictException('Organization not found');
+    let organization;
+
+    // Find or create organization
+    if (organizationSlug) {
+      organization = await this.prisma.organization.findUnique({
+        where: { slug: organizationSlug },
+      });
+      if (!organization) {
+        throw new ConflictException('Organization not found');
+      }
+    } else {
+      // Create new organization if name is provided
+      const orgName = organizationName || `${firstName}'s Organization`;
+      const slug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      
+      organization = await this.prisma.organization.create({
+        data: {
+          name: orgName,
+          slug: `${slug}-${Date.now()}`, // Add timestamp to ensure uniqueness
+          status: 'active',
+          subscriptionTier: 'enterprise',
+        },
+      });
     }
 
     // Hash password
@@ -40,10 +57,10 @@ export class AuthService {
         passwordHash,
         firstName,
         lastName,
-        role,
+        role: role as any,
         organizationId: organization.id,
         isActive: true,
-        isVerified: false,
+        isVerified: true, // Auto-verify for now
       },
       select: {
         id: true,
@@ -52,12 +69,18 @@ export class AuthService {
         lastName: true,
         role: true,
         isVerified: true,
+        organizationId: true,
       },
     });
 
+    // Generate tokens
+    const tokens = await this.generateTokens(user.id, user.email, user.organizationId);
+
     return {
       user,
-      message: 'Registration successful. Please verify your email.',
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      message: 'Registration successful',
     };
   }
 

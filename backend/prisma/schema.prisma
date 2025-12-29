@@ -14,6 +14,16 @@ datasource db {
 }
 
 // ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  ADMIN
+  AUTHOR
+  CONSUMER
+}
+
+// ============================================
 // ORGANIZATIONS & USERS
 // ============================================
 
@@ -69,7 +79,7 @@ model User {
   title                String?   @db.VarChar(100)
   department           String?   @db.VarChar(100)
   
-  role                 String    @db.VarChar(50)
+  role                 UserRole  @default(CONSUMER)
   permissions          Json      @default("[]")
   
   oauthProvider        String?   @map("oauth_provider") @db.VarChar(50)

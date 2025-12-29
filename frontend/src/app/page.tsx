@@ -151,7 +151,8 @@ export default function Home() {
               <Link href="#platforms" className="text-gray-300 hover:text-white transition-colors">Platforms</Link>
               <Link href="#security" className="text-gray-300 hover:text-white transition-colors">Security</Link>
               <Link href="/api/docs" className="text-gray-300 hover:text-white transition-colors">API Docs</Link>
-              <Link href="/connections" className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105">
+              <Link href="/login" className="text-gray-300 hover:text-white transition-colors">Login</Link>
+              <Link href="/register" className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105">
                 Get Started
               </Link>
             </div>
