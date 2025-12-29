@@ -14,29 +14,21 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
-    console.log('Google login button clicked!');
-    // Redirect to backend Google OAuth endpoint
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://samvaadx-production.up.railway.app/api/v1';
-    const authUrl = `${API_URL}/auth/google`;
-    console.log('Redirecting to:', authUrl);
+    // Use production backend URL directly (Railway sets NEXT_PUBLIC_API_URL during build)
+    const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000/api/v1'
+      : 'https://samvaadx-production.up.railway.app/api/v1';
     
-    // Debug: Show where we're going
-    alert(`OAuth URL: ${authUrl}\n\nNote: You need to add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to Railway first!`);
-    
-    window.location.href = authUrl;
+    window.location.href = `${backendUrl}/auth/google`;
   };
 
   const handleGitHubLogin = () => {
-    console.log('GitHub login button clicked!');
-    // Redirect to backend GitHub OAuth endpoint  
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://samvaadx-production.up.railway.app/api/v1';
-    const authUrl = `${API_URL}/auth/github`;
-    console.log('Redirecting to:', authUrl);
+    // Use production backend URL directly (Railway sets NEXT_PUBLIC_API_URL during build)
+    const backendUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000/api/v1'
+      : 'https://samvaadx-production.up.railway.app/api/v1';
     
-    // Debug: Show where we're going
-    alert(`OAuth URL: ${authUrl}\n\nNote: You need to add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET to Railway first!`);
-    
-    window.location.href = authUrl;
+    window.location.href = `${backendUrl}/auth/github`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
