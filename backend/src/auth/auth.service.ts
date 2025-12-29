@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 import { PrismaService } from '../database/prisma.service';
 import { LoginDto, RegisterDto } from './dto';
 
@@ -231,6 +232,21 @@ export class AuthService {
   private getPermissionsForRole(role: string): string[] {
     // Simplified permission mapping - would be more sophisticated in production
     const rolePermissions = {
+      ADMIN: ['*'],
+      AUTHOR: [
+        'content.create',
+        'content.read',
+        'content.update',
+        'content.delete',
+        'media.upload',
+        'media.read',
+        'campaigns.create',
+        'campaigns.read',
+      ],
+      CONSUMER: [
+        'content.read',
+        'campaigns.read',
+      ],
       super_admin: ['*'],
       org_admin: [
         'users.*',
@@ -259,6 +275,214 @@ export class AuthService {
     };
 
     return rolePermissions[role] || [];
+  }
+
+  async googleLogin(code: string) {
+    try {
+      // Exchange code for tokens
+      const GOOGLE_CLIENT_ID = this.configService.get<string>('GOOGLE_CLIENT_ID');
+      const GOOGLE_CLIENT_SECRET = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
+      const redirectUri = `${this.configService.get<string>('BACKEND_URL') || 'https://samvaadx-production.up.railway.app'}/api/v1/auth/google/callback`;
+
+      const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
+        code,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      });
+
+      const { access_token } = tokenResponse.data;
+
+      // Get user info from Google
+      const userInfoResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const googleUser = userInfoResponse.data;
+
+      // Find or create user
+      let user = await this.prisma.user.findUnique({
+        where: { email: googleUser.email },
+        include: { organization: true },
+      });
+
+      if (!user) {
+        // Create organization for new user
+        const orgName = `${googleUser.given_name}'s Organization`;
+        const slug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        
+        const organization = await this.prisma.organization.create({
+          data: {
+            name: orgName,
+            slug: `${slug}-${Date.now()}`,
+            status: 'active',
+            subscriptionTier: 'enterprise',
+          },
+        });
+
+        // Create user
+        user = await this.prisma.user.create({
+          data: {
+            email: googleUser.email,
+            firstName: googleUser.given_name || 'User',
+            lastName: googleUser.family_name || '',
+            avatarUrl: googleUser.picture,
+            role: 'CONSUMER' as any,
+            organizationId: organization.id,
+            oauthProvider: 'google',
+            oauthId: googleUser.id,
+            isActive: true,
+            isVerified: true,
+            emailVerifiedAt: new Date(),
+          },
+          include: { organization: true },
+        });
+      }
+
+      // Update last login
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+
+      // Generate tokens
+      const tokens = await this.generateTokens(user.id, user.email, user.organizationId);
+
+      return {
+        ...tokens,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatarUrl: user.avatarUrl,
+          role: user.role,
+          organization: user.organization,
+          permissions: this.getPermissionsForRole(user.role),
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException(`Google authentication failed: ${error.message}`);
+    }
+  }
+
+  async githubLogin(code: string) {
+    try {
+      // Exchange code for tokens
+      const GITHUB_CLIENT_ID = this.configService.get<string>('GITHUB_CLIENT_ID');
+      const GITHUB_CLIENT_SECRET = this.configService.get<string>('GITHUB_CLIENT_SECRET');
+      const redirectUri = `${this.configService.get<string>('BACKEND_URL') || 'https://samvaadx-production.up.railway.app'}/api/v1/auth/github/callback`;
+
+      const tokenResponse = await axios.post(
+        'https://github.com/login/oauth/access_token',
+        {
+          client_id: GITHUB_CLIENT_ID,
+          client_secret: GITHUB_CLIENT_SECRET,
+          code,
+          redirect_uri: redirectUri,
+        },
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      );
+
+      const { access_token } = tokenResponse.data;
+
+      // Get user info from GitHub
+      const userInfoResponse = await axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const githubUser = userInfoResponse.data;
+
+      // Get user email if not public
+      let email = githubUser.email;
+      if (!email) {
+        const emailsResponse = await axios.get('https://api.github.com/user/emails', {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        const primaryEmail = emailsResponse.data.find((e: any) => e.primary);
+        email = primaryEmail?.email || `${githubUser.login}@github.user`;
+      }
+
+      // Find or create user
+      let user = await this.prisma.user.findUnique({
+        where: { email },
+        include: { organization: true },
+      });
+
+      if (!user) {
+        // Create organization for new user
+        const orgName = `${githubUser.name || githubUser.login}'s Organization`;
+        const slug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        
+        const organization = await this.prisma.organization.create({
+          data: {
+            name: orgName,
+            slug: `${slug}-${Date.now()}`,
+            status: 'active',
+            subscriptionTier: 'enterprise',
+          },
+        });
+
+        // Parse name
+        const nameParts = (githubUser.name || githubUser.login).split(' ');
+        const firstName = nameParts[0] || 'User';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        // Create user
+        user = await this.prisma.user.create({
+          data: {
+            email,
+            firstName,
+            lastName,
+            avatarUrl: githubUser.avatar_url,
+            role: 'CONSUMER' as any,
+            organizationId: organization.id,
+            oauthProvider: 'github',
+            oauthId: String(githubUser.id),
+            isActive: true,
+            isVerified: true,
+            emailVerifiedAt: new Date(),
+          },
+          include: { organization: true },
+        });
+      }
+
+      // Update last login
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+
+      // Generate tokens
+      const tokens = await this.generateTokens(user.id, user.email, user.organizationId);
+
+      return {
+        ...tokens,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatarUrl: user.avatarUrl,
+          role: user.role,
+          organization: user.organization,
+          permissions: this.getPermissionsForRole(user.role),
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException(`GitHub authentication failed: ${error.message}`);
+    }
   }
 }
 
