@@ -14,15 +14,29 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
+    console.log('Google login button clicked!');
     // Redirect to backend Google OAuth endpoint
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://samvaadx-production.up.railway.app/api/v1';
-    window.location.href = `${API_URL}/auth/google`;
+    const authUrl = `${API_URL}/auth/google`;
+    console.log('Redirecting to:', authUrl);
+    
+    // Debug: Show where we're going
+    alert(`OAuth URL: ${authUrl}\n\nNote: You need to add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to Railway first!`);
+    
+    window.location.href = authUrl;
   };
 
   const handleGitHubLogin = () => {
+    console.log('GitHub login button clicked!');
     // Redirect to backend GitHub OAuth endpoint  
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://samvaadx-production.up.railway.app/api/v1';
-    window.location.href = `${API_URL}/auth/github`;
+    const authUrl = `${API_URL}/auth/github`;
+    console.log('Redirecting to:', authUrl);
+    
+    // Debug: Show where we're going
+    alert(`OAuth URL: ${authUrl}\n\nNote: You need to add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET to Railway first!`);
+    
+    window.location.href = authUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
