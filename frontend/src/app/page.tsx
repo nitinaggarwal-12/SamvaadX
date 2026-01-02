@@ -490,6 +490,7 @@ export default function Home() {
                 <li><Link href="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
                 <li><Link href="/api/docs" className="hover:text-white transition-colors">API Reference</Link></li>
                 <li><Link href="/guides" className="hover:text-white transition-colors">Guides</Link></li>
+                <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
                 <li><Link href="/support" className="hover:text-white transition-colors">Support</Link></li>
               </ul>
             </div>
