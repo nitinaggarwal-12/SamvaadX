@@ -7,6 +7,8 @@ export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessage, setChatMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<Array<{left: number, top: number, delay: number, duration: number}>>([]);
 
@@ -26,6 +28,35 @@ export default function Home() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleSendMessage = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!chatMessage.trim()) return;
+
+    // Add user message
+    const newMessages = [...chatMessages, { role: 'user' as const, content: chatMessage }];
+    setChatMessages(newMessages);
+    setChatMessage('');
+
+    // Simulate AI response
+    setTimeout(() => {
+      const responses = [
+        "Thanks for reaching out! I can help you schedule a demo, answer questions about features, or connect you with our team. What would you like to know?",
+        "SamvaadX is trusted by governments worldwide for secure, AI-powered social media marketing. Would you like to see a demo?",
+        "I'd be happy to help! You can also explore our features, check pricing, or contact our team directly. What interests you most?",
+        "Great question! SamvaadX offers enterprise-grade security, multi-platform publishing, and real-time analytics. Want to learn more about a specific feature?",
+      ];
+      setChatMessages([...newMessages, { 
+        role: 'assistant' as const, 
+        content: responses[Math.floor(Math.random() * responses.length)] 
+      }]);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % 6);
+    }, 3000);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -369,35 +400,59 @@ export default function Home() {
             </div>
             
             <div className="p-6 h-[350px] overflow-y-auto space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  🤖
+              {chatMessages.length === 0 ? (
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    🤖
+                  </div>
+                  <div className="bg-white/10 rounded-2xl rounded-tl-none p-4">
+                    <p>Hi! I'm your AI assistant. I can help you:</p>
+                    <ul className="mt-2 space-y-1 text-sm">
+                      <li>• Schedule a demo</li>
+                      <li>• Answer questions about features</li>
+                      <li>• Provide pricing information</li>
+                      <li>• Connect you with our team</li>
+                    </ul>
+                  </div>
                 </div>
-                <div className="bg-white/10 rounded-2xl rounded-tl-none p-4">
-                  <p>Hi! I'm your AI assistant. I can help you:</p>
-                  <ul className="mt-2 space-y-1 text-sm">
-                    <li>• Schedule a demo</li>
-                    <li>• Answer questions about features</li>
-                    <li>• Provide pricing information</li>
-                    <li>• Connect you with our team</li>
-                  </ul>
-                </div>
-              </div>
+              ) : (
+                chatMessages.map((msg, idx) => (
+                  <div key={idx} className={`flex items-start space-x-3 ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      msg.role === 'user' ? 'bg-blue-600' : 'bg-purple-600'
+                    }`}>
+                      {msg.role === 'user' ? '👤' : '🤖'}
+                    </div>
+                    <div className={`rounded-2xl p-4 max-w-[75%] ${
+                      msg.role === 'user' 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 rounded-tr-none' 
+                        : 'bg-white/10 rounded-tl-none'
+                    }`}>
+                      {msg.content}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
             
             <div className="p-4 border-t border-white/10">
-              <div className="flex items-center space-x-2">
+              <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
                 <input
                   type="text"
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
                 />
-                <button className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center hover:shadow-lg transition-all">
+                <button 
+                  type="submit"
+                  className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center hover:shadow-lg transition-all"
+                >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         )}
