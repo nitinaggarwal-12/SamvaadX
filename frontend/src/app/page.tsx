@@ -57,6 +57,9 @@ export default function Home() {
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % 6);
     }, 3000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
